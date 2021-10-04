@@ -18,16 +18,15 @@
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="profile" href="https://gmpg.org/xfn/11">
-    <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-
     <?php wp_head(); ?>
 </head>
 
 <body <?php body_class(); ?>>
     <?php wp_body_open(); ?>
-    
-    <button onclick="topFunction()" id="backToTop" title="Go to top">Top</button>
+
+    <button onclick="topFunction()" id="backToTop" title="Go to top">
+        <img src="<?php echo get_template_directory_uri() ?>/assets/icons/anchor-up.png" alt="Go to Top">
+    </button>
 
     <div id="page" class="site">
         <a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e('Skip to content', 'runaway-withme'); ?></a>
@@ -59,7 +58,8 @@
                     </div>
                     <!-- end .col-md-4 -->
                     <div class="col-md-8">
-                        <img src="<?php echo get_template_directory_uri() ?>/assets/images/banner-ad.png" alt="Banner" class="img">
+                        <!-- <img src="<?php //echo get_template_directory_uri() 
+                                        ?>/assets/images/banner-ad.png" alt="Banner" class="img"> -->
                     </div>
                     <!-- end .col-md-8 -->
                 </div>
@@ -85,7 +85,7 @@
                             </nav><!-- #site-navigation -->
                         </div>
                         <!-- end .col-md-8 -->
-                        <div class="col-md-3">
+                        <div class="col-md-3 header_social">
                             <ul class="social_and_search">
                                 <li>
                                     <a target="_blank" href="http://www.facebook.com/runawaywithmeblog">
@@ -102,10 +102,11 @@
                                         <img src="<?php echo get_template_directory_uri() ?>/assets/icons/pinterest2.svg" alt="Pinterest">
                                     </a>
                                 </li>
-                                <li>
-                                    <?php echo get_search_form(); ?>
-                                </li>
                             </ul>
+                        </div>
+                        <!-- end .col-md-3 -->
+                        <div class="col-md-3">
+                            <?php echo get_search_form(); ?>
                         </div>
                         <!-- end .col-md-3 -->
                     </div>

@@ -56,46 +56,45 @@ get_header();
             </div>
         </div>
         <!-- end .row -->
-        <!-- <img src="<?php //echo get_template_directory_uri() 
-                        ?>/assets/images/banner.png" alt="Banner" class="img"> -->
     </div>
     <!-- end .container-fluid -->
+
+    <!-- HOMEPAGE LATEST POSTS -->
     <div class="container">
         <div class="row">
             <div class="col-md-9">
 
                 <div class="row">
+                    <?php
+                    if (have_posts()) {
+                        while (have_posts()) {
+                            $classes = get_post_class('standard-post', $post->ID);
+                            $homePosts .= '<div class="col-md-6">';
+                            $homePosts .= '<article class="' . esc_attr(implode(' ', $classes)) . '" >';
+                            the_post();
+                            if (has_post_thumbnail()) {
+                                $post_id = get_the_ID(); // or use the post id if you already have it
+                                $category_object = get_the_category($post_id);
+                                $category_name = $category_object[0]->name;
+                                $category_id = get_cat_ID($category_name);
+                                $category_link = get_category_link($category_id);
 
-                    <?php
-                    if (have_posts()) :
-                        if (is_home() && !is_front_page()) :
-                    ?>
-                            <header>
-                                <h1 class="page-title screen-reader-text"><?php single_post_title(); ?></h1>
-                            </header>
-                        <?php
-                        endif;
-                        while (have_posts()) :
-                        ?>
-                            <div class="col-md-6 post-card">
-                                <?php
-                                the_post();
-                                get_template_part('template-parts/content', get_post_type());
-                                ?>
-                            </div>
-                            <!-- end .col-md-6 -->
-                        <?php
-                        endwhile;
-                        ?>
-                        <div class="col-md-12">
-                            <?php the_posts_navigation(); ?>
-                        </div>
-                    <?php
-                    else :
+                                $homePosts .= '<a href="' . get_the_permalink() . '" rel="bookmark">' . get_the_post_thumbnail($post_id, array(570, 180)) . '<h2>' . get_the_title() . '</h2>' . '</a><a href="' . esc_url($category_link) . '" class="badge-name">' . $category_name . '</a>';
+                                $homePosts .= wp_trim_words(get_the_content(), 20, '...');
+                            } else {
+                                // if no featured image is found
+                                $homePosts .= '<a href="' . get_the_permalink() . '" rel="bookmark">' . '<h2>' . get_the_title() . '</h2>' . '</a>';
+                            }
+                            $homePosts .= '</article>';
+                            $homePosts .= '</div>';
+                        }
+                    } else {
                         get_template_part('template-parts/content', 'none');
-                    endif;
-                    ?>
+                    }
 
+                    echo $homePosts;
+                    wp_reset_postdata();
+                    ?>
                 </div>
                 <!-- end .row -->
 
@@ -108,6 +107,7 @@ get_header();
         <!-- end .row -->
     </div>
     <!-- end .container -->
+
 </main><!-- #main -->
 
 <?php

@@ -226,3 +226,58 @@ function featured_custom_post()
     register_post_type('featured', $args);
 }
 add_action('init', 'featured_custom_post');
+
+// SOCIAL BUTTONS
+// Function to handle the thumbnail request
+function get_the_post_thumbnail_src($img)
+{
+    return (preg_match('~\bsrc="([^"]++)"~', $img, $matches)) ? $matches[1] : '';
+}
+function wpvkp_social_buttons($content)
+{
+    global $post;
+    if (is_singular() || is_home()) {
+
+        // Get current page URL 
+        $sb_url = urlencode(get_the_permalink());
+
+        // Get current page title
+        $sb_title = str_replace(' ', '%20', get_the_title());
+
+        // Get Post Thumbnail for pinterest
+        $sb_thumb = get_the_post_thumbnail_src(get_the_post_thumbnail());
+
+        // Construct sharing URL without using any script
+        $twitterURL = 'https://twitter.com/intent/tweet?text=' . $sb_title . '&amp;url=' . $sb_url . '&amp;via=runaway_withme1';
+        //$link  = 'https://twitter.com/share?text=' . urlencode($page_title . $by) . '&url=' . $page_permalink;
+        $facebookURL = 'https://www.facebook.com/sharer/sharer.php?u=' . $sb_url;
+        $bufferURL = 'https://bufferapp.com/add?url=' . $sb_url . '&amp;text=' . $sb_title;
+        $whatsappURL = 'whatsapp://send?text=' . $sb_title . ' ' . $sb_url;
+        $linkedInURL = 'https://www.linkedin.com/shareArticle?mini=true&url=' . $sb_url . '&amp;title=' . $sb_title;
+
+        if (!empty($sb_thumb)) {
+            $pinterestURL = 'https://pinterest.com/pin/create/button/?url=' . $sb_url . '&amp;media=' . $sb_thumb[0] . '&amp;description=' . $sb_title;
+        } else {
+            $pinterestURL = 'https://pinterest.com/pin/create/button/?url=' . $sb_url . '&amp;description=' . $sb_title;
+        }
+
+        // Based on popular demand added Pinterest too
+        $pinterestURL = 'https://pinterest.com/pin/create/button/?url=' . $sb_url . '&amp;media=' . $sb_thumb[0] . '&amp;description=' . $sb_title;
+
+        // Add sharing button at the end of page/page content
+        $content .= '<div class="social-box"><div class="social-btn">';
+        $content .= '<span class="col-1 sbtn shareOn">Share on: </span>';
+        $content .= '<a class="col-1 sbtn s-twitter" href="' . $twitterURL . '" target="_blank" rel="nofollow"><img src="' . get_template_directory_uri() . '/assets/icons/share_twitter-circle.png" alt="Twitter"></a>';
+        $content .= '<a class="col-1 sbtn s-facebook" href="' . $facebookURL . '" target="_blank" rel="nofollow"><img src="'.get_template_directory_uri().'/assets/icons/share_facebook-circle.png" alt="Facebook"></a>';
+        $content .= '<a class="col-2 sbtn s-whatsapp" href="' . $whatsappURL . '" target="_blank" rel="nofollow"><img src="' . get_template_directory_uri() . '/assets/icons/share_whatsapp-circle.png" alt="WhatsApp"></a>';
+        $content .= '<a class="col-2 sbtn s-linkedin" href="' . $linkedInURL . '" target="_blank" rel="nofollow"><img src="' . get_template_directory_uri() . '/assets/icons/share_linkedin-circle.png" alt="LinkedIn"></a>';
+        $content .= '<a class="col-2 sbtn s-pinterest" href="' . $pinterestURL . '" data-pin-custom="true" target="_blank" rel="nofollow"><img src="'.get_template_directory_uri().'/assets/icons/share_telegram-circle.png" alt="Telegram"></a>';
+        $content .= '<a class="col-2 sbtn s-buffer" href="' . $bufferURL . '" target="_blank" rel="nofollow"><img src="'.get_template_directory_uri().'/assets/icons/share_mail-circle.png" alt="Mail"></a>';
+        $content .= '</div></div>';
+
+        return $content;
+    } else {
+        return $content;
+    }
+};
+add_shortcode('social', 'wpvkp_social_buttons');

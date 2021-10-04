@@ -117,37 +117,32 @@
     }
 }());
 
-// SWITCHER
-// const sunMoonContainer = document.querySelector('.sun-moon-container')
-// document.querySelector('.theme-toggle-button').addEventListener('click',() =>{    
-//     document.body.classList.toggle('dark');
-//     const currentRotation = parseInt(getComputedStyle(sunMoonContainer).getPropertyValue('--rotation'));
-//     sunMoonContainer.style.setProperty('--rotation',currentRotation+360)
-// });
-
 // POST SLIDER
-var slider = document.getElementById('slider')
-var sliderItem = slider.getElementsByTagName('div');
-var dots = document.getElementById('dots');
-var dotsChild = document.getElementById('dots').getElementsByTagName('li');
-for (i = 0; i < sliderItem.length; i++)
+var slider = document.getElementById('slider');
+if (slider)
 {
-    dots.appendChild(document.createElement('li'));
-    dotsChild[i].classList.add('list-inline-item');
-    dotsChild[i].setAttribute("id", i);
-    dotsChild[i].innerHTML = i;
-    dotsChild[0].classList.add('active');
-    dotsChild[i].addEventListener("click", runSlider);
-}
-function runSlider()
-{
-    var dnum = this.getAttribute("id");
+    var sliderItem = slider.getElementsByTagName('div');
+    var dots = document.getElementById('dots');
+    var dotsChild = document.getElementById('dots').getElementsByTagName('li');
     for (i = 0; i < sliderItem.length; i++)
     {
-        sliderItem[i].classList.remove('active');
-        sliderItem[dnum].classList.add('active');
-        dotsChild[i].classList.remove('active');
-        dotsChild[dnum].classList.add('active');
+        dots.appendChild(document.createElement('li'));
+        dotsChild[i].classList.add('list-inline-item');
+        dotsChild[i].setAttribute("id", i);
+        dotsChild[i].innerHTML = i;
+        dotsChild[0].classList.add('active');
+        dotsChild[i].addEventListener("click", runSlider);
+    }
+    function runSlider()
+    {
+        var dnum = this.getAttribute("id");
+        for (i = 0; i < sliderItem.length; i++)
+        {
+            sliderItem[i].classList.remove('active');
+            sliderItem[dnum].classList.add('active');
+            dotsChild[i].classList.remove('active');
+            dotsChild[dnum].classList.add('active');
+        }
     }
 }
 

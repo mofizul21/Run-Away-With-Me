@@ -20,7 +20,7 @@
             the_title('<h2 class="entry-title"><a href="' . esc_url(get_permalink()) . '" rel="bookmark">', '</a></h2>');
         endif;
 
-        if ('post' === get_post_type()) :
+        //if ('post' === get_post_type()) :
         ?>
             <div class="entry-meta">
                 <?php
@@ -28,14 +28,18 @@
                 runaway_withme_posted_by();
                 ?>
             </div><!-- .entry-meta -->
-        <?php endif; ?>
+            <?php echo do_shortcode('[social]'); ?>
+        <?php //endif; ?>
     </header><!-- .entry-header -->
     <div class="entry-content">
         <?php
-        the_excerpt();
+        //the_excerpt();
+        the_content();
+        //echo wp_trim_words(get_the_content(), 20, '...');
         ?>
     </div><!-- .entry-content -->
     <footer class="entry-footer">
+        <?php echo do_shortcode('[social]'); ?>
         <?php runaway_withme_entry_footer(); ?>
     </footer><!-- .entry-footer -->
 </article><!-- #post-<?php the_ID(); ?> -->
