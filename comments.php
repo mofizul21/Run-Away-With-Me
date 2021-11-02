@@ -29,17 +29,16 @@ if ( post_password_required() ) {
 		<h2 class="comments-title">
 			<?php
 			$runaway_withme_comment_count = get_comments_number();
+            //echo $runaway_withme_comment_count . " Comments";
 			if ( '1' === $runaway_withme_comment_count ) {
 				printf(
-					/* translators: 1: title. */
-					esc_html__( 'One thought on &ldquo;%1$s&rdquo;', 'runaway-withme' ),
+					esc_html__( 'One comment on &ldquo;%1$s&rdquo;', 'runaway-withme' ),
 					'<span>' . wp_kses_post( get_the_title() ) . '</span>'
 				);
 			} else {
-				printf( 
-					/* translators: 1: comment count number, 2: title. */
-					esc_html( _nx( '%1$s thought on &ldquo;%2$s&rdquo;', '%1$s thoughts on &ldquo;%2$s&rdquo;', $runaway_withme_comment_count, 'comments title', 'runaway-withme' ) ),
-					number_format_i18n( $runaway_withme_comment_count ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				printf(
+					esc_html( _nx( '%1$s comment on &ldquo;%2$s&rdquo;', '%1$s comments on &ldquo;%2$s&rdquo;', $runaway_withme_comment_count, 'comments title', 'runaway-withme' ) ),
+					number_format_i18n( $runaway_withme_comment_count ),
 					'<span>' . wp_kses_post( get_the_title() ) . '</span>'
 				);
 			}
@@ -52,7 +51,7 @@ if ( post_password_required() ) {
 			<?php
 			wp_list_comments(
 				array(
-					'style'      => 'ol',
+					'style'      => 'li',
 					'short_ping' => true,
 				)
 			);

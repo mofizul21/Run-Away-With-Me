@@ -10,9 +10,14 @@
 
 get_header();
 ?>
-<div class="container mt-4">
+<div class="container-fluid containerFluidHasPadding mt-5">
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-3 d-none d-lg-block col3PaddingRight">
+            <?php include('inc/leftSidebar.php') ?>
+        </div>
+        <!-- end .col-md-2 -->
+
+        <div class="col-md-6">
             <main id="primary" class="site-main single_post">
                 <?php
                 while (have_posts()) :
@@ -37,16 +42,16 @@ get_header();
 
             </main><!-- #main -->
         </div>
-        <!-- end .col-md-9 -->
-        <div class="col-md-3">
+        <!-- end .col-md-6 -->
+
+        <div class="col-md-3 col3PaddingLeft" id="hasPadding">
             <?php get_sidebar(); ?>
         </div>
-        <!-- end .col-md-3 -->
+        <!-- end .col-md-2 -->
     </div>
     <!-- end .row -->
 </div>
 <!-- end .container -->
 
 <?php
-get_sidebar();
 get_footer();

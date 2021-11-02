@@ -9,7 +9,7 @@
  *
  * @package runaway-withme
  */
-
+$my_options = get_option('my_framework');
 ?>
 <!doctype html>
 <html <?php language_attributes(); ?>>
@@ -67,51 +67,31 @@
             </div>
             <!-- enc .container -->
 
-            <!-- MENU -->
-            <div class="menu-and-others">
+            <!-- MENU - BS5 -->
+            <nav class="navbar navbar-expand-md navbar-light mt-4 menu_area">
                 <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <nav id="site-navigation" class="main-navigation">
-                                <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><?php esc_html_e('Menu', 'runaway-withme'); ?></button>
-                                <?php
-                                wp_nav_menu(
-                                    array(
-                                        'theme_location' => 'menu-1',
-                                        'menu_id'        => 'primary-menu',
-                                    )
-                                );
-                                ?>
-                            </nav><!-- #site-navigation -->
-                        </div>
-                        <!-- end .col-md-8 -->
-                        <div class="col-md-3 header_social">
-                            <ul class="social_and_search">
-                                <li>
-                                    <a target="_blank" href="http://www.facebook.com/runawaywithmeblog">
-                                        <img src="<?php echo get_template_directory_uri() ?>/assets/icons/facebook.svg" alt="Facebook">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a target="_blank" href="http://www.instagram.com/runaway.withme_">
-                                        <img src="<?php echo get_template_directory_uri() ?>/assets/icons/instagram.svg" alt="Instagram">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a target="_blank" href="http://www.pinterest.com/runawaywithmetravel">
-                                        <img src="<?php echo get_template_directory_uri() ?>/assets/icons/pinterest2.svg" alt="Pinterest">
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- end .col-md-3 -->
-                        <div class="col-md-3">
-                            <?php echo get_search_form(); ?>
-                        </div>
-                        <!-- end .col-md-3 -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="main-menu">
+                        <?php
+                        wp_nav_menu(array(
+                            'theme_location' => 'main-menu',
+                            'container' => false,
+                            'menu_class' => '',
+                            'fallback_cb' => '__return_false',
+                            'items_wrap' => '<ul id="%1$s" class="navbar-nav me-auto mb-2 mb-md-0 %2$s">%3$s</ul>',
+                            'depth' => 2,
+                            'walker' => new bootstrap_5_wp_nav_menu_walker()
+                        ));
+                        ?>
+
+                        <form class="d-flex search_form" method="get" action="<?php echo site_url() ?>">
+                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="s">
+                            <button class="btn btn-outline-success btn-light" type="submit">Search</button>
+                        </form>
                     </div>
-                    <!-- end .row -->
                 </div>
-                <!-- end .container -->
-            </div>
+            </nav>
         </header><!-- #masthead -->

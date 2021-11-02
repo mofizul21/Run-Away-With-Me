@@ -10,7 +10,7 @@
 
 get_header();
 ?>
-<div class="container mt-4">
+<div class="container mt-5">
     <div class="row">
         <div class="col-md-9">
             <main id="primary" class="site-main archivePosts">
@@ -35,7 +35,7 @@ get_header();
             </main><!-- #main -->
         </div>
         <!-- end .col-md-9 -->
-        <div class="col-md-3">
+        <div class="col-md-3 col3PaddingLeft" id="hasPadding">
             <?php get_sidebar(); ?>
         </div>
         <!-- end .col-md-3 -->

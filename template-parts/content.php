@@ -28,7 +28,7 @@
                 runaway_withme_posted_by();
                 ?>
             </div><!-- .entry-meta -->
-            <?php echo do_shortcode('[social]'); ?>
+            <?php //echo do_shortcode('[social]'); ?>
         <?php //endif; ?>
     </header><!-- .entry-header -->
     <div class="entry-content">

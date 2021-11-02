@@ -48,11 +48,11 @@ if ( ! function_exists( 'runaway_withme_setup' ) ) :
 		add_theme_support( 'post-thumbnails' );
 
 		// This theme uses wp_nav_menu() in one location.
-		register_nav_menus(
-			array(
-				'menu-1' => esc_html__( 'Primary', 'runaway-withme' ),
-			)
-		);
+		// register_nav_menus(
+		// 	array(
+		// 		'menu-1' => esc_html__( 'Primary', 'runaway-withme' ),
+		// 	)
+		// );
 
 		/*
 		 * Switch default core markup for search form, comment form, and comments
@@ -140,9 +140,13 @@ add_action( 'widgets_init', 'runaway_withme_widgets_init' );
  * Enqueue scripts and styles.
  */
 function runaway_withme_scripts() {
+	//wp_enqueue_style( 'runaway-withme-bootstrap', get_stylesheet_uri(), '/css/bootstrap.min.css', array(), _S_VERSION );
+    wp_enqueue_style('runaway-withme-bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css', false, '1.1', 'all');
+
 	wp_enqueue_style( 'runaway-withme-style', get_stylesheet_uri(), array(), _S_VERSION );
 	wp_style_add_data( 'runaway-withme-style', 'rtl', 'replace' );
 
+	wp_enqueue_script( 'runaway-withme-bootstrap', get_template_directory_uri() . '/js/bootstrap.bundle.min.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'runaway-withme-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -218,14 +222,19 @@ function featured_custom_post()
         'rewrite'            => array('slug' => 'featured'),
         'capability_type'    => 'post',
         'has_archive'        => true,
-        'hierarchical'       => false,
+        'hierarchical'       => true,
         'menu_position'      => null,
-        'supports'           => array('title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments'),
+        'supports'           => array('title', 'author', 'thumbnail', 'excerpt', 'custom-fields'),
+        'taxonomies'         => array(),
     );
 
     register_post_type('featured', $args);
 }
 add_action('init', 'featured_custom_post');
+
+
+
+
 
 // SOCIAL BUTTONS
 // Function to handle the thumbnail request
@@ -266,13 +275,13 @@ function wpvkp_social_buttons($content)
 
         // Add sharing button at the end of page/page content
         $content .= '<div class="social-box"><div class="social-btn">';
-        $content .= '<span class="col-1 sbtn shareOn">Share on: </span>';
+        $content .= '<span class="col-2 sbtn shareOn">Share on: </span>';
         $content .= '<a class="col-1 sbtn s-twitter" href="' . $twitterURL . '" target="_blank" rel="nofollow"><img src="' . get_template_directory_uri() . '/assets/icons/share_twitter-circle.png" alt="Twitter"></a>';
         $content .= '<a class="col-1 sbtn s-facebook" href="' . $facebookURL . '" target="_blank" rel="nofollow"><img src="'.get_template_directory_uri().'/assets/icons/share_facebook-circle.png" alt="Facebook"></a>';
-        $content .= '<a class="col-2 sbtn s-whatsapp" href="' . $whatsappURL . '" target="_blank" rel="nofollow"><img src="' . get_template_directory_uri() . '/assets/icons/share_whatsapp-circle.png" alt="WhatsApp"></a>';
-        $content .= '<a class="col-2 sbtn s-linkedin" href="' . $linkedInURL . '" target="_blank" rel="nofollow"><img src="' . get_template_directory_uri() . '/assets/icons/share_linkedin-circle.png" alt="LinkedIn"></a>';
-        $content .= '<a class="col-2 sbtn s-pinterest" href="' . $pinterestURL . '" data-pin-custom="true" target="_blank" rel="nofollow"><img src="'.get_template_directory_uri().'/assets/icons/share_telegram-circle.png" alt="Telegram"></a>';
-        $content .= '<a class="col-2 sbtn s-buffer" href="' . $bufferURL . '" target="_blank" rel="nofollow"><img src="'.get_template_directory_uri().'/assets/icons/share_mail-circle.png" alt="Mail"></a>';
+        $content .= '<a class="col-1 sbtn s-whatsapp" href="' . $whatsappURL . '" target="_blank" rel="nofollow"><img src="' . get_template_directory_uri() . '/assets/icons/share_whatsapp-circle.png" alt="WhatsApp"></a>';
+        $content .= '<a class="col-1 sbtn s-linkedin" href="' . $linkedInURL . '" target="_blank" rel="nofollow"><img src="' . get_template_directory_uri() . '/assets/icons/share_linkedin-circle.png" alt="LinkedIn"></a>';
+        $content .= '<a class="col-1 sbtn s-pinterest" href="' . $pinterestURL . '" data-pin-custom="true" target="_blank" rel="nofollow"><img src="'.get_template_directory_uri().'/assets/icons/share_telegram-circle.png" alt="Telegram"></a>';
+        $content .= '<a class="col-1 sbtn s-buffer" href="' . $bufferURL . '" target="_blank" rel="nofollow"><img src="'.get_template_directory_uri().'/assets/icons/share_mail-circle.png" alt="Mail"></a>';
         $content .= '</div></div>';
 
         return $content;
@@ -281,3 +290,216 @@ function wpvkp_social_buttons($content)
     }
 };
 add_shortcode('social', 'wpvkp_social_buttons');
+
+
+// BOOTSTARP 5 wp_nav_menu walker
+class bootstrap_5_wp_nav_menu_walker extends Walker_Nav_menu
+{
+    private $current_item;
+    private $dropdown_menu_alignment_values = [
+        'dropdown-menu-start',
+        'dropdown-menu-end',
+        'dropdown-menu-sm-start',
+        'dropdown-menu-sm-end',
+        'dropdown-menu-md-start',
+        'dropdown-menu-md-end',
+        'dropdown-menu-lg-start',
+        'dropdown-menu-lg-end',
+        'dropdown-menu-xl-start',
+        'dropdown-menu-xl-end',
+        'dropdown-menu-xxl-start',
+        'dropdown-menu-xxl-end'
+    ];
+
+    function start_lvl(&$output, $depth = 0, $args = null)
+    {
+        $dropdown_menu_class[] = '';
+        foreach ($this->current_item->classes as $class) {
+            if (in_array($class, $this->dropdown_menu_alignment_values)) {
+                $dropdown_menu_class[] = $class;
+            }
+        }
+        $indent = str_repeat("\t", $depth);
+        $submenu = ($depth > 0) ? ' sub-menu' : '';
+        $output .= "\n$indent<ul class=\"dropdown-menu$submenu " . esc_attr(implode(" ", $dropdown_menu_class)) . " depth_$depth\">\n";
+    }
+
+    function start_el(&$output, $item, $depth = 0, $args = null, $id = 0)
+    {
+        $this->current_item = $item;
+
+        $indent = ($depth) ? str_repeat("\t", $depth) : '';
+
+        $li_attributes = '';
+        $class_names = $value = '';
+
+        $classes = empty($item->classes) ? array() : (array) $item->classes;
+
+        $classes[] = ($args->walker->has_children) ? 'dropdown' : '';
+        $classes[] = 'nav-item';
+        $classes[] = 'nav-item-' . $item->ID;
+        if ($depth && $args->walker->has_children) {
+            $classes[] = 'dropdown-menu dropdown-menu-end';
+        }
+
+        $class_names =  join(' ', apply_filters('nav_menu_css_class', array_filter($classes), $item, $args));
+        $class_names = ' class="' . esc_attr($class_names) . '"';
+
+        $id = apply_filters('nav_menu_item_id', 'menu-item-' . $item->ID, $item, $args);
+        $id = strlen($id) ? ' id="' . esc_attr($id) . '"' : '';
+
+        $output .= $indent . '<li ' . $id . $value . $class_names . $li_attributes . '>';
+
+        $attributes = !empty($item->attr_title) ? ' title="' . esc_attr($item->attr_title) . '"' : '';
+        $attributes .= !empty($item->target) ? ' target="' . esc_attr($item->target) . '"' : '';
+        $attributes .= !empty($item->xfn) ? ' rel="' . esc_attr($item->xfn) . '"' : '';
+        $attributes .= !empty($item->url) ? ' href="' . esc_attr($item->url) . '"' : '';
+
+        $active_class = ($item->current || $item->current_item_ancestor || in_array("current_page_parent", $item->classes, true) || in_array("current-post-ancestor", $item->classes, true)) ? 'active' : '';
+        $nav_link_class = ($depth > 0) ? 'dropdown-item ' : 'nav-link ';
+        $attributes .= ($args->walker->has_children) ? ' class="' . $nav_link_class . $active_class . ' dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"' : ' class="' . $nav_link_class . $active_class . '"';
+
+        $item_output = $args->before;
+        $item_output .= '<a' . $attributes . '>';
+        $item_output .= $args->link_before . apply_filters('the_title', $item->title, $item->ID) . $args->link_after;
+        $item_output .= '</a>';
+        $item_output .= $args->after;
+
+        $output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
+    }
+}
+// register a new menu
+register_nav_menu('main-menu', 'BS menu');
+
+// CODE STAR FRAMEWORK
+// Check core class for avoid errors
+if (class_exists('CSF')) {
+
+    // Set a unique slug-like ID
+    $prefix = 'my_framework';
+
+    // Create options
+    CSF::createOptions($prefix, array(
+        'menu_title' => 'Theme Options',
+        'menu_slug'  => 'my-framework',
+    ));
+
+    // About Me Page
+    CSF::createSection($prefix, array(
+        'title'  => 'About Me',
+        'fields' => array(
+            array(
+                'id'    => 'aboutMeTilte',
+                'type'  => 'text',
+                'title' => 'Title',
+                'default' => 'About Me',
+            ),            
+
+            array(
+                'id'    => 'aboutMeEditor',
+                'type'  => 'wp_editor',
+                'title' => 'Description',
+                'sanitize' => false,
+            ),
+
+            array(
+                'id'        => 'naomiImage',
+                'type'      => 'upload',
+                'title'     => 'Image Upload',
+            ),
+
+            array(
+                'id'    => 'textUnderImage',
+                'type'  => 'text',
+                'title' => 'Image description',
+                'default' => 'Here I am in Iceland, taking a dip in the Blue Lagoon!',
+            ),
+
+
+        )
+    ));
+
+    // Contact Page
+    CSF::createSection($prefix, array(
+        'title'  => 'Contact Page',
+        'fields' => array(
+            array(
+                'id'    => 'getInTouch',
+                'type'  => 'text',
+                'title' => 'Title',
+                'default' => 'Get in touch',
+            ),
+
+            array(
+                'id'        => 'contactPageBg',
+                'type'      => 'upload',
+                'title'     => 'Image Upload',
+                'default'   => 'https://runaway-withme.com/wp-content/uploads/2021/11/buenos-_aires_big.jpg',
+            ),
+
+        )
+    ));
+
+    // Sidebar Options
+    CSF::createSection($prefix, array(
+        'title'  => 'Sidebar',
+        'fields' => array(
+            array(
+                'id'        => 'sidebarNaomi',
+                'type'      => 'upload',
+                'title'     => 'Sidebar Image',
+                'default'   => 'https://runaway-withme.com/wp-content/uploads/2021/11/naomi-round.jpg',
+            ),
+
+            array(
+                'id'        => 'sidebarAboutMeTitle',
+                'type'      => 'text',
+                'title'     => 'About Me',
+                'default'   => 'About Me',
+            ),
+
+            array(
+                'id'        => 'sidebarAboutMeDesc',
+                'type'      => 'text',
+                'title'     => 'Description',
+                'default'   => '29 years, 33 countries, 100s of stories. Run Away With Me!',
+            ),
+
+            array(
+                'id'        => 'subscribeTitle',
+                'type'      => 'text',
+                'title'     => 'Subscribe Title',
+                'default'   => 'Subscribe',
+            ),
+
+            array(
+                'id'        => 'subscribeBg',
+                'type'      => 'upload',
+                'title'     => 'Subscribe Image',
+                'default'   => 'https://runaway-withme.com/wp-content/uploads/2021/11/subscripton_box_bg.jpg',
+
+            ),
+        )
+    ));
+
+    // Contact Page
+    CSF::createSection($prefix, array(
+        'title'  => 'Footer',
+        'fields' => array(
+            array(
+                'id'    => 'copyrightText',
+                'type'  => 'text',
+                'title' => 'Copyright Text',
+                'default' => '© 2021. All Rights Reserved by Run Away With Me.',
+            ),
+
+            array(
+                'id'        => 'destinationMap',
+                'type'      => 'upload',
+                'title'     => 'Destination Map',
+                'default'   => 'https://runaway-withme.com/wp-content/uploads/2021/11/map_updated.png',
+            ),
+
+        )
+    ));
+}

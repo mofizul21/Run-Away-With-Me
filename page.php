@@ -16,7 +16,7 @@
 get_header();
 ?>
 
-<div class="container mt-4">
+<div class="container mt-5">
     <div class="row">
         <div class="col-md-9">
             <main id="primary" class="site-main">
@@ -36,10 +36,11 @@ get_header();
             </main><!-- #main -->
         </div>
         <!-- end .col-md-9 -->
-        <div class="col-md-3">
+        <div class="col-md-1"></div>
+        <div class="col-md-2">
             <?php get_sidebar(); ?>
         </div>
-        <!-- end .col-md-3 -->
+        <!-- end .col-md-2 -->
     </div>
     <!-- end .row -->
 </div>
